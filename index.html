@@ -1,0 +1,234 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <title>Nhập TKB ĐKMH</title>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <!-- <script src="https://unpkg.com/ics@3.7.2/dist/index.js" crossorigin="anonymous" referrerpolicy="no-referrer"></script> -->
+    <!-- <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script> -->
+    <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script> -->
+    <!-- <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script> -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+       
+</head>
+
+<body>
+    <div class="container">
+        <div style="margin: 5%;"></div>
+        <div class="card text-center">
+            <h3 class="card-title">Ứng dụng nhập thời khóa biểu từ web đkmh mybk</h3>
+            <p>Regex design by: @kenkout. Web build by @namanhishere.</p>
+            <p>Contact me at: namanh@namanhishere.com</p>
+        </div>
+        <div style="margin: 3%;"></div>
+        <div class="card">
+            <h4 class="card-title">Nhập dữ liệu thời khóa biểu</h4>
+            <textarea class="form-control" id="text-box" placeholder="Điền dữ liệu của bạn vào đây" row="10"></textarea>
+            <div style="margin: 1%;"></div>
+            <div class="btn-primary btn" id="verifybtn">Nhập thời khóa biểu</div>
+        </div>
+        <div style="margin: 3%;"></div>
+
+        <div class="card text-center">
+            <h3 class="card-title">Dữ liệu trả về</h3>
+            <!-- <button class='btn btn-success' onmousedown=`downloadTKB()`>Tải file .ics</button> -->
+            <div id="icsTextExport">
+                
+            </div>
+        </div>
+
+
+    </div>
+</body>
+
+
+<script>
+    let eventList = []
+
+
+    // var cal = ics();
+    const subjectPattern = /^\d+([A-Z]{2}\d{4}) - (.+)[0-9].[0-9]/;
+    
+
+
+    function dayMap(inp){
+        if(inp == "Chủ nhật") return 0
+        //who care the error
+        return parseInt(inp.split(" ")[1])-1
+    }
+    function addDays(date, days) {
+        const result = new Date(date);
+        result.setDate(result.getDate() + days);
+        return result;
+    }
+    function download(data, filename, type) {
+        var file = new Blob([data], {type: type});
+        if (window.navigator.msSaveOrOpenBlob) // IE10+
+            window.navigator.msSaveOrOpenBlob(file, filename);
+        else { // Others
+            var a = document.createElement("a"),
+                    url = URL.createObjectURL(file);
+            a.href = url;
+            a.download = filename;
+            document.body.appendChild(a);
+            a.click();
+            setTimeout(function() {
+                document.body.removeChild(a);
+                window.URL.revokeObjectURL(url);  
+            }, 0); 
+        }
+    }
+    function createEventPromise(event){
+        //copy from BKalendar
+        let countEvent = 0
+        let startString =`BEGIN:VCALENDAR
+VERSION:2.0
+BEGIN:VTIMEZONE
+TZID:Asia/Ho_Chi_Minh
+TZURL:http://tzurl.org/zoneinfo-outlook/Asia/Ho_Chi_Minh
+X-LIC-LOCATION:Asia/Ho_Chi_Minh
+BEGIN:STANDARD
+TZOFFSETFROM:+0700
+TZOFFSETTO:+0700
+TZNAME:+07
+DTSTART:19700101T000000
+END:STANDARD
+END:VTIMEZONE\n`
+let eventString = ""
+event.forEach(eve => {
+    countEvent ++
+    eventString  = eventString+ `BEGIN:VEVENT
+UID:${"dkh1"+countEvent}
+SUMMARY:${eve.title}
+DTSTAMP:20050101T000000Z
+DTSTART:${eve.start[0]}${addZero(eve.start[1])}${addZero(eve.start[2])}T${addZero(eve.start[3]-8)}${addZero(eve.start[4])}00Z
+DTEND:${eve.end[0]}${addZero(eve.end[1])}${addZero(eve.end[2])}T${addZero(eve.end[3]-8)}${addZero(eve.end[4])}00Z
+LOCATION:${eve.location}
+END:VEVENT
+`
+})
+let endString = "END:VCALENDAR"
+return startString+eventString+endString
+    }
+
+
+    function downloadTKB() {
+        let vale = createEventPromise(eventList)
+        download(vale,"tkb.ics","text/plain")
+    }
+    function addZero(intp){
+        if(intp<10) return `0${intp}`
+        return intp
+    }
+
+
+    document.getElementById("verifybtn").addEventListener("click",function(e){
+        e.preventDefault()
+        eventList = []
+        let textInp  = document.getElementById("text-box").value
+        let lines = textInp.split("\n")
+        let startDate = new Date(2024,0,1)
+
+        let listTatCaMon = []
+
+        for (let index = 0; index < lines.length; index++) {
+            let line = lines[index];
+
+            //line format
+            // line = line.trim()
+
+            // console.log(lines.length)
+            
+
+
+            //if not môn, so skip
+            let subjectMatch =  line.match(subjectPattern) 
+            if(line.match(subjectPattern) == null) continue 
+
+            // console.log(subjectMatch)
+
+            let currentClass = {
+                subject: subjectMatch[1] + ' - ' + subjectMatch[2].trim(),
+                listTuanHoc: []
+            };
+
+            // console.log(lines[index+4])
+
+            let countSoTiet = 1
+
+            // console.log()
+            while(lines[index+3+countSoTiet ].match(subjectPattern) == null ){
+                
+                if(lines[index+4+countSoTiet].startsWith("Tổng số tín chỉ đăng ký:")) break
+                let buoiHocRaw = (lines[index+3+countSoTiet]).split("\t")
+                // console.log(typeof buoiHocRaw[0])
+                // console.log(lines[index+3+countSoTiet])
+                if(!buoiHocRaw[0] || buoiHocRaw[0] == "" || buoiHocRaw[0]==undefined || buoiHocRaw[0]==null) break
+
+                let tietInfo = {
+                    thu : dayMap(buoiHocRaw[0]),
+                    tiet:buoiHocRaw[1].split(" ").map((v,i)=> v=="-"? "99999":i+1).filter(v => v!="99999"),    
+                    phongHoc:buoiHocRaw[2],
+                    cs:buoiHocRaw[3],
+                    tuanHoc:buoiHocRaw[5].split("").filter(v=> v!=" ").map((v,i)=> v=="-"? "99999":i+1).filter(v => v!="99999"),
+
+                    // tietString:buoiHocRaw[5].split("").map((v,i)=> v=="-"? "--|":`${i+1}|`).join(""),
+
+                    // tuanHocString : buoiHocRaw[1].split("").map((v,i)=> v=="-"? "--|":`${i+1}|`).join(""),
+                }
+
+                currentClass.listTuanHoc.push(tietInfo)
+
+                //add Event
+                // cal.addEvent(currentClass.subject, 't', tietInfo.phongHoc , '1   2/25/2013', '12/25/2013');
+
+                let startTimeHour = parseInt(tietInfo.tiet[0]) + 6; // Tiet starts at 6 AM
+                let endTimeHour = parseInt(tietInfo.tiet[tietInfo.tiet.length-1]) + 6; // Same as start time, plus offset
+
+                
+
+                tietInfo.tuanHoc.forEach(tuan => {
+                    let daysToAdd = tuan * 7 + tietInfo.thu - startDate.getDay();
+                    let eventDate = addDays(startDate, daysToAdd);
+
+                    eventList.push({
+                        start: [eventDate.getFullYear(), eventDate.getMonth() + 1, eventDate.getDate(), startTimeHour, 0],
+                        end: [eventDate.getFullYear(), eventDate.getMonth() + 1, eventDate.getDate(), endTimeHour, 50],
+                        productId: "lichHocDKMHmybk",
+                        title: currentClass.subject,
+                        location:tietInfo.phongHoc
+                    })
+                    
+                });
+
+                
+                // console.dir(tietInfo,{length:null})
+                countSoTiet++
+            }
+
+            // console.log(currentClass)
+            listTatCaMon.push(currentClass)
+        }
+
+        console.log(listTatCaMon)
+
+        let eventCreated = createEventPromise(eventList)
+
+        document.getElementById("icsTextExport").innerHTML =    "<button class='btn btn-success' onmousedown='downloadTKB()'>Tải file .ics</button><div style='margin: 1%;'><p>"+eventCreated+"</p><div style='margin: 1%;'>"
+
+
+
+
+        
+
+
+    })
+
+</script>
+
+<style>
+
+</style>
+</html>
