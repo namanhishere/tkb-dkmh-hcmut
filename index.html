@@ -129,11 +129,11 @@ return startString+eventString+endString
         eventList = []
         let textInp  = document.getElementById("text-box").value
         let lines = textInp.split("\n")
-        let startDate = new Date(2024,0,1)
+        let startDate = new Date(2024,0,1) //config theo ngày thứ 2 của tuần trước khi bắt đầu học kì
 
         let listTatCaMon = []
 
-        for (let index = 0; index < lines.length; index++) {
+        mainLoop:for (let index = 0; index < lines.length; index++) {
             let line = lines[index];
 
             //line format
@@ -164,48 +164,55 @@ return startString+eventString+endString
                 if(lines[index+4+countSoTiet].startsWith("Tổng số tín chỉ đăng ký:")) break
                 let buoiHocRaw = (lines[index+3+countSoTiet]).split("\t")
                 // console.log(typeof buoiHocRaw[0])
-                // console.log(lines[index+3+countSoTiet])
-                if(!buoiHocRaw[0] || buoiHocRaw[0] == "" || buoiHocRaw[0]==undefined || buoiHocRaw[0]==null) break
+                console.log(buoiHocRaw[0])
+                if(!buoiHocRaw[0] || buoiHocRaw[0] == "" || buoiHocRaw[0]==undefined || buoiHocRaw[0]==null || buoiHocRaw[0].trim() != "Chưa biết"){
 
-                let tietInfo = {
-                    thu : dayMap(buoiHocRaw[0]),
-                    tiet:buoiHocRaw[1].split(" ").map((v,i)=> v=="-"? "99999":i+1).filter(v => v!="99999"),    
-                    phongHoc:buoiHocRaw[2],
-                    cs:buoiHocRaw[3],
-                    tuanHoc:buoiHocRaw[5].split("").filter(v=> v!=" ").map((v,i)=> v=="-"? "99999":i+1).filter(v => v!="99999"),
+                        let tietInfo = {
+                        thu : dayMap(buoiHocRaw[0]),
+                        tiet:buoiHocRaw[1].split(" ").map((v,i)=> v=="-"? "99999":i+1).filter(v => v!="99999"),    
+                        phongHoc:buoiHocRaw[2],
+                        cs:buoiHocRaw[3],
+                        tuanHoc:buoiHocRaw[5].split("").filter(v=> v!=" ").map((v,i)=> v=="-"? "99999":i+1).filter(v => v!="99999"),
 
-                    // tietString:buoiHocRaw[5].split("").map((v,i)=> v=="-"? "--|":`${i+1}|`).join(""),
+                        // tietString:buoiHocRaw[5].split("").map((v,i)=> v=="-"? "--|":`${i+1}|`).join(""),
 
-                    // tuanHocString : buoiHocRaw[1].split("").map((v,i)=> v=="-"? "--|":`${i+1}|`).join(""),
+                        // tuanHocString : buoiHocRaw[1].split("").map((v,i)=> v=="-"? "--|":`${i+1}|`).join(""),
+                    }
+
+                    currentClass.listTuanHoc.push(tietInfo)
+
+                    //add Event
+                    // cal.addEvent(currentClass.subject, 't', tietInfo.phongHoc , '1   2/25/2013', '12/25/2013');
+
+                    let startTimeHour = parseInt(tietInfo.tiet[0]) + 6; // Tiet starts at 6 AM
+                    let endTimeHour = parseInt(tietInfo.tiet[tietInfo.tiet.length-1]) + 6; // Same as start time, plus offset
+
+                    
+
+                    tietInfo.tuanHoc.forEach(tuan => {
+                        let daysToAdd = tuan * 7 + tietInfo.thu - startDate.getDay();
+                        let eventDate = addDays(startDate, daysToAdd);
+
+                        eventList.push({
+                            start: [eventDate.getFullYear(), eventDate.getMonth() + 1, eventDate.getDate(), startTimeHour, 0],
+                            end: [eventDate.getFullYear(), eventDate.getMonth() + 1, eventDate.getDate(), endTimeHour, 50],
+                            productId: "lichHocDKMHmybk",
+                            title: currentClass.subject,
+                            location:tietInfo.phongHoc
+                        })
+                        
+                        
+                    });
+
+                    
+                    // console.dir(tietInfo,{length:null})
+                    
+
                 }
 
-                currentClass.listTuanHoc.push(tietInfo)
-
-                //add Event
-                // cal.addEvent(currentClass.subject, 't', tietInfo.phongHoc , '1   2/25/2013', '12/25/2013');
-
-                let startTimeHour = parseInt(tietInfo.tiet[0]) + 6; // Tiet starts at 6 AM
-                let endTimeHour = parseInt(tietInfo.tiet[tietInfo.tiet.length-1]) + 6; // Same as start time, plus offset
-
-                
-
-                tietInfo.tuanHoc.forEach(tuan => {
-                    let daysToAdd = tuan * 7 + tietInfo.thu - startDate.getDay();
-                    let eventDate = addDays(startDate, daysToAdd);
-
-                    eventList.push({
-                        start: [eventDate.getFullYear(), eventDate.getMonth() + 1, eventDate.getDate(), startTimeHour, 0],
-                        end: [eventDate.getFullYear(), eventDate.getMonth() + 1, eventDate.getDate(), endTimeHour, 50],
-                        productId: "lichHocDKMHmybk",
-                        title: currentClass.subject,
-                        location:tietInfo.phongHoc
-                    })
-                    
-                });
-
-                
-                // console.dir(tietInfo,{length:null})
                 countSoTiet++
+
+
             }
 
             // console.log(currentClass)
