@@ -1,0 +1,402 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <title>Nhập TKB ĐKMH</title>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link rel="manifest" href="manifest.json" />
+    <!-- <script src="https://polyfill.io/v3/polyfill.min.js?features=WeakRef,BigInt"></script> -->
+    <!-- <script src="https://cdn.jsdelivr.net/npm/superagent"></script> -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+        integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.30.1/moment.min.js"></script>
+
+</head>
+
+<body>
+    <div class="container">
+        <!-- <div style="margin: 5%;"></div> -->
+        <div class="card card-body text-center">
+            <h3 class="card-tite">Tìm kiếm buổi học</h3>
+            <p>Web build by @namanhishere. Contact me at: namanh@namanhishere.com </p>
+            <p>Trạng thái dữ liệu : <strong id="data_status">Đang tải</strong></p>
+        </div>
+        <div id="requiredLoaded" style="display: none;">
+            <div style="margin: 5%;"></div>
+            <div class="card card-body">
+                <h5>Thông tin bộ lọc</h5>
+                <div class="row">
+                    <!-- <div class="col">
+                        <strong for="email" class="form-label">Học kì:</strong>
+                        <input type="text" class="form-control">
+                    </div> -->
+                    <div class="col">
+                        <strong for="email" class="form-label">Cơ sở:</strong>
+                        <input class="form-control" list="cosoDataList" id="cosoInput">
+                        <datalist id="cosoDataList">
+
+                        </datalist>
+                    </div>
+                    <div class="col">
+                        <strong for="email" class="form-label">Môn học:</strong>
+                        <input class="form-control" list="monhocDataList" id="monhocInput">
+                        <datalist id="monhocDataList">
+
+                        </datalist>
+                    </div>
+                    <div class="col">
+                        <strong for="email" class="form-label">Giáo viên:</strong>
+                        <input class="form-control" list="giaovienDataList" id="giaovienInput">
+                        <datalist id="giaovienDataList">
+
+                        </datalist>
+                    </div>
+                </div>
+                <div style="margin: 1%;"></div>
+                <!-- <div class="row">
+                    <div class="col" >
+                        <strong for="email" class="form-label">Nhập thời khóa biểu của bạn</strong>
+                        <textarea class="form-control" rows="3" id="comment" name="text"></textarea>
+                        <small>Bộ lọc sẽ tự động bỏ đi các môn bạn bị trùng. <a href="#">Xóa dữ liệu</a></small>
+                    </div>
+    
+                    <div class="col" >
+    
+                    </div>
+                </div>
+                <button type="button" class="btn btn-success" id="btn-press">Tìm kiếm</button> -->
+            </div>
+        </div>
+
+        <div style="margin: 5%;"></div>
+
+        <div class="card">
+            <div class="card-body">
+                <h3 class="card-title text-center">Dữ liệu trả về</h3>
+                <p class="text-center">Đang hiển thị dữ liệu cho <strong id="currentWeek">....</strong> (Bắt đầu từ ngày
+                    <strong id="weekStart">.....</strong> đến <strong id="weekEnd">.....</strong>)</p>
+                <div class="text-center">
+                    <button class="btn btn-success" id="btn-previousTuan">Tuần trước đó</button>
+                    <button class="btn btn-warning" id="btn-currentTuan">Tuần hiện tại</button>
+
+                    <button class="btn btn-primary">Chuyển tuần nâng cao</button>
+
+                    <button class="btn btn-success" id="btn-nextTuan">Tuần sau đó</button>
+
+
+                </div>
+                <div style="margin: 1%;"></div>
+
+                <div id="data-return"></div>
+
+
+
+
+            </div>
+
+
+
+
+        </div>
+
+
+
+    </div>
+</body>
+
+
+
+<script>
+
+    let savedData = [];
+    let currentFilter = [];
+
+//     function getCurrentWeekNumber() {
+//   const currentDate = new Date();
+//   const startDate = new Date(currentDate.getFullYear(), 0, 1); // January 1st of the current year
+//   const days = Math.floor((currentDate - startDate) / (24 * 60 * 60 * 1000)) + 1; // +1 for the current day
+//   const weekNumber = Math.ceil(days / 7);
+
+//   return weekNumber;
+// }
+    let selectedTimme = moment()
+
+    document.getElementById("btn-previousTuan").addEventListener("click",function (e){
+        e.preventDefault()
+        selectedTimme.add(-1,"week")
+        updateWeek()
+        filterWithWeek()
+    })
+    document.getElementById("btn-nextTuan").addEventListener("click",function (e){
+        e.preventDefault()
+        selectedTimme.add(1,"week")
+        updateWeek()
+        filterWithWeek()
+    })
+
+    document.getElementById("btn-currentTuan").addEventListener("click",function (e){
+        e.preventDefault()
+        selectedTimme = moment()
+        updateWeek()
+        filterWithWeek()
+    })
+
+    function addZero(intp){
+            if(intp<10) return `0${intp}`
+            return intp
+    }
+
+    function download(data, filename, type) {
+            var file = new Blob([data], {type: type});
+            if (window.navigator.msSaveOrOpenBlob) // IE10+
+                window.navigator.msSaveOrOpenBlob(file, filename);
+            else { // Others
+                var a = document.createElement("a"),
+                        url = URL.createObjectURL(file);
+                a.href = url;
+                a.download = filename;
+                document.body.appendChild(a);
+                a.click();
+                setTimeout(function() {
+                    document.body.removeChild(a);
+                    window.URL.revokeObjectURL(url);  
+                }, 0); 
+            }
+        }
+
+
+    function downloadICSEvent(title,timeStart,timeEnd,date,location){
+        let filename =`tkbbosung.ics`
+        let fileText =  `
+        BEGIN:VCALENDAR
+        VERSION:2.0
+        BEGIN:VTIMEZONE
+        TZID:Asia/Ho_Chi_Minh
+        TZURL:http://tzurl.org/zoneinfo-outlook/Asia/Ho_Chi_Minh
+        X-LIC-LOCATION:Asia/Ho_Chi_Minh
+        BEGIN:STANDARD
+        TZOFFSETFROM:+0700
+        TZOFFSETTO:+0700
+        TZNAME:+07
+        DTSTART:19700101T000000
+        END:STANDARD
+        END:VTIMEZONE
+        EGIN:VEVENT
+        UID:dkmh${(Math.random() + 1).toString(36).substring(20)}
+        SUMMARY:${title}
+        DTSTAMP:20050101T000000Z
+        DTSTART:${date[0]}${addZero(date[1])}${addZero(date[2])}T${addZero(timeStart[3]-8)}${addZero(timeStart[4])}00Z
+        DTEND:${date[0]}${addZero(date[1])}${addZero(date[2])}T${addZero(timeEnd[3]-8)}${addZero(timeEnd[4])}00Z
+        LOCATION:${location}
+        END:VEVENT
+        END:VCALENDAR
+        `
+
+        var file = new Blob([fileText], {type: "text/plain"});
+            if (window.navigator.msSaveOrOpenBlob) // IE10+
+                window.navigator.msSaveOrOpenBlob(file, filename);
+            else { // Others
+                var a = document.createElement("a"),
+                        url = URL.createObjectURL(file);
+                a.href = url;
+                a.download = filename;
+                document.body.appendChild(a);
+                a.click();
+                setTimeout(function() {
+                    document.body.removeChild(a);
+                    window.URL.revokeObjectURL(url);  
+                }, 0); 
+            }
+    }
+
+    
+
+
+
+    // document.getElementById("currentWeek").innerHTML = `Tuần ${selectedWeek}`;
+    updateWeek()
+    // filterWithWeek()
+
+    function updateWeek(){
+        document.getElementById("currentWeek").innerHTML = `Tuần ${selectedTimme.week()}`;
+        //set to final
+        selectedTimme.weekday(6)
+        document.getElementById("weekEnd").innerHTML = `${selectedTimme.date()}/${selectedTimme.month()+1}/${selectedTimme.year()}`;;
+        //set back to begining
+        selectedTimme.weekday(0)
+        document.getElementById("weekStart").innerHTML = `${selectedTimme.date()}/${selectedTimme.month()+1}/${selectedTimme.year()}`;
+        
+
+
+        
+    }
+
+
+    function filterWithWeek(){
+        let listLop = currentFilter.filter(v=>v.tuanHoc.indexOf(selectedTimme.week()) != -1)
+        document.getElementById("data-return").innerHTML = [0,1,2,3,4,5,6].map((filterDayOfWeek)=>{ //idk wth I do, just display in the day of week from Thứ 2 to CN
+            selectedTimme.weekday(filterDayOfWeek)
+
+            
+            let listLopOfDay = listLop.filter(v => v.dayOfWeek == filterDayOfWeek).sort((bh1,bh2)=> {
+                if (bh1.tiet[0] > bh2.tiet[0] == 0 ) return 0
+                return bh1.tiet[0] > bh2.tiet[0] ? 1:-1
+            })
+            
+            return `
+            <h4>${filterDayOfWeek == 0 ? "Chủ nhật":"Thứ "+(filterDayOfWeek+1)} (${selectedTimme.date()}/${selectedTimme.month()+1}/${selectedTimme.year()})</h4>
+                <p>Có <strong>${listLopOfDay.length}</strong> lớp học phù hợp</p>
+                ${listLopOfDay.map((buoihoc,i) => {
+                    return `
+                    <div class="card">
+                    <div class="card-body">
+                        <h5>${i+1}.${buoihoc.tiet[0]+6}:00 - ${buoihoc.tiet[buoihoc.tiet.length-1]+6}:50</h5>
+                        <ul>
+                            <li><strong>Môn học: </strong>${buoihoc.maMonHoc} - ${buoihoc.tenMonHoc}</li>
+                            <li><strong>Phòng học: </strong>${buoihoc.phong}  (cơ sở ${buoihoc.coso})</li>
+                            <li><strong>Nhóm/Tổ: </strong>${buoihoc.group}</li>
+                            <li><strong>Giáo viên LT: </strong>${buoihoc.giangVienLT}</li>
+                            <li><strong>Giáo viên BT: </strong>${buoihoc.giangVienBT}</li>
+                            <li><strong>Số tuần hiển thị tuần trên hệ thống: </strong>${buoihoc.tuanHoc.length}</li>
+                        </ul>
+                        <button class="btn btn-success" onclick="downloadICSEvent('${buoihoc.maMonHoc} - ${buoihoc.tenMonHoc}',[${buoihoc.tiet[0]+6},00],[${buoihoc.tiet[buoihoc.tiet.length-1]+6},50],[${selectedTimme.year()},${selectedTimme.month()+1},${selectedTimme.date()}],'${buoihoc.phong}')">Tạo file .ics lớp học này</button>
+                    </div>
+                </div>
+                    `
+                }).join("\n")}
+
+                <div style="margin: 1%;"></div>
+            `
+        }).join("")
+
+        //re-set to start week
+        selectedTimme.weekday(0)
+
+        return listLop
+    }
+
+
+    (async () => {
+        console.time()
+        let response = await fetch("/static/HK232.json")
+
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+
+        // Parse the JSON content of the response
+        let fetched_data = await response.json();
+
+        fetched_data.forEach(mh => {
+            mh.lichHoc.forEach(lh => {
+                lh.classInfo.forEach(bh => {
+                    savedData.push({
+                        maMonHoc: mh.maMonHoc,
+                        tenMonHoc: mh.tenMonHoc,
+                        group: lh.group,
+                        nhomLT: lh.nhomLT,
+                        nhomBT: lh.nhomBT,
+                        giangVienLT: lh.giangVien,
+                        giangVienBT: lh.giangVienBT,
+                        dayOfWeek: bh.dayOfWeek,
+                        phong: bh.phong,
+                        coso: bh.coso,
+                        tuanHoc: bh.tuanHoc,
+                        tiet:bh.tietHoc,
+                    })
+                })
+            })
+        });
+
+        FilterDataa("", "", "")
+        filterWithWeek()
+
+        console.timeEnd()
+
+
+
+        document.getElementById("requiredLoaded").style.display = "block";
+        document.getElementById("data_status").innerHTML = "Hoàn thành"
+
+        console.log(`Tìm thấy tổng cộng: ${currentFilter.length} lớp học`)
+
+
+
+
+
+    })()
+
+
+
+
+
+
+    document.getElementById("cosoInput").addEventListener("change", function (e) {
+        e.preventDefault()
+
+        let cosoInput = document.getElementById("cosoInput").value
+        let monhocInput = document.getElementById("monhocInput").value
+        let giaovienInput = document.getElementById("giaovienInput").value
+        FilterDataa(cosoInput, giaovienInput, monhocInput.split(" - ")[0])
+        filterWithWeek()
+    })
+
+    document.getElementById("monhocInput").addEventListener("change", function (e) {
+        e.preventDefault()
+
+        let cosoInput = document.getElementById("cosoInput").value
+        let monhocInput = document.getElementById("monhocInput").value
+        let giaovienInput = document.getElementById("giaovienInput").value
+        FilterDataa(cosoInput, giaovienInput, monhocInput.split(" - ")[0])
+        filterWithWeek()
+    })
+    document.getElementById("giaovienInput").addEventListener("change", function (e) {
+        e.preventDefault()
+
+        let cosoInput = document.getElementById("cosoInput").value
+        let monhocInput = document.getElementById("monhocInput").value
+        let giaovienInput = document.getElementById("giaovienInput").value
+        FilterDataa(cosoInput, giaovienInput, monhocInput.split(" - ")[0])
+        filterWithWeek()
+    })
+
+
+    function FilterDataa(coso, giaoVien, MonHoc) {
+
+        console.log({ coso, giaoVien, MonHoc })
+
+        let returnList = savedData
+        if (coso) returnList = returnList.filter(v => v.coso == coso)
+        if (giaoVien) returnList = returnList.filter(v => v.giangVienBT == giaoVien || v.giangVienLT == giaoVien)
+        if (MonHoc) returnList = returnList.filter(v => v.maMonHoc == MonHoc)
+
+        let returnedData = {
+            listGiaoVien: [].concat(returnList.map(v => v.giangVienLT)).concat(returnList.map(v => v.giangVienBT)).filter((v, i, a) => a.indexOf(v) == i),
+            listCoso: returnList.map(v => v.coso).filter((v, i, a) => a.indexOf(v) == i),
+            listMonHoc: returnList.map(v => `${v.maMonHoc} - ${v.tenMonHoc}`).filter((v, i, a) => a.indexOf(v) == i),
+        }
+
+        console.log(returnedData.listGiaoVien.length, returnedData.listCoso.length, returnedData.listCoso.length)
+        document.getElementById("cosoDataList").innerHTML = returnedData.listCoso.map(v => `<option value="${v}">`).join("")
+        document.getElementById("monhocDataList").innerHTML = returnedData.listMonHoc.map(v => `<option value="${v}">`).join("")
+        document.getElementById("giaovienDataList").innerHTML = returnedData.listGiaoVien.map(v => `<option value="${v}">`).join("")
+
+        currentFilter = returnList
+
+        return returnedData
+    }
+
+
+
+
+</script>
+
+<style>
+    body {
+        background-color: lightgray;
+    }
+</style>
+
+</html>
