@@ -19,7 +19,7 @@
     <div class="container">
         <!-- <div style="margin: 5%;"></div> -->
         <div class="card card-body text-center">
-            <h3 class="card-tite">Tìm kiếm buổi học</h3>
+            <h3 class="card-tite">HCMUT - All in one</h3>
             <p>Web build by @namanhishere. Contact me at: namanh@namanhishere.com </p>
             <p>Trạng thái dữ liệu : <strong id="data_status">Đang tải</strong></p>
         </div>
@@ -27,26 +27,27 @@
             <div style="margin: 5%;"></div>
             <div class="card card-body">
                 <h5>Thông tin bộ lọc</h5>
+                
                 <div class="row">
                     <!-- <div class="col">
                         <strong for="email" class="form-label">Học kì:</strong>
                         <input type="text" class="form-control">
                     </div> -->
-                    <div class="col">
+                    <div class="col-xl">
                         <strong for="email" class="form-label">Cơ sở:</strong>
                         <input class="form-control" list="cosoDataList" id="cosoInput">
                         <datalist id="cosoDataList">
 
                         </datalist>
                     </div>
-                    <div class="col">
+                    <div class="col-xl">
                         <strong for="email" class="form-label">Môn học:</strong>
                         <input class="form-control" list="monhocDataList" id="monhocInput">
                         <datalist id="monhocDataList">
 
                         </datalist>
                     </div>
-                    <div class="col">
+                    <div class="col-xl">
                         <strong for="email" class="form-label">Giáo viên:</strong>
                         <input class="form-control" list="giaovienDataList" id="giaovienInput">
                         <datalist id="giaovienDataList">
@@ -68,8 +69,15 @@
                 </div>
                 <button type="button" class="btn btn-success" id="btn-press">Tìm kiếm</button> -->
             </div>
-        </div>
 
+            <div style="margin: 5%;"></div>
+        <div class="card card-body">
+            <h4 class="card-title">Lưu ý</h4>
+            <ul>
+                <li>Hiện tại, tất cả các lớp vào chủ nhật sẽ bị ẩn vì lý do có thể có sai sót</li>
+                <li>Các bạn chủ động kiểm tra rằng lớp là lớp Lý thuyết hay Lớp bài tập / Thực hành dựa trên số tuần hiển thị. (Vì web tự động tìm trùng cả tên Giảng viên Lý thuyết hoặc Giảng Viên bài tập)</li>
+            </ul>
+        </div>
         <div style="margin: 5%;"></div>
 
         <div class="card">
@@ -81,13 +89,15 @@
                     <button class="btn btn-success" id="btn-previousTuan">Tuần trước đó</button>
                     <button class="btn btn-warning" id="btn-currentTuan">Tuần hiện tại</button>
 
-                    <button class="btn btn-primary">Chuyển tuần nâng cao</button>
+                    <!-- <button class="btn btn-primary">Chuyển tuần nâng cao</button> -->
 
                     <button class="btn btn-success" id="btn-nextTuan">Tuần sau đó</button>
 
 
                 </div>
                 <div style="margin: 1%;"></div>
+                </p>
+
 
                 <div id="data-return"></div>
 
@@ -100,6 +110,9 @@
 
 
         </div>
+        </div>
+
+        
 
 
 
@@ -236,7 +249,9 @@
 
     function filterWithWeek(){
         let listLop = currentFilter.filter(v=>v.tuanHoc.indexOf(selectedTimme.week()) != -1)
-        document.getElementById("data-return").innerHTML = [0,1,2,3,4,5,6].map((filterDayOfWeek)=>{ //idk wth I do, just display in the day of week from Thứ 2 to CN
+
+        console.log(listLop)
+        document.getElementById("data-return").innerHTML = [1,2,3,4,5,6].map((filterDayOfWeek)=>{ //idk wth I do, just display in the day of week from Thứ 2 to CN
             selectedTimme.weekday(filterDayOfWeek)
 
             
@@ -252,7 +267,7 @@
                     return `
                     <div class="card">
                     <div class="card-body">
-                        <h5>${i+1}.${buoihoc.tiet[0]+6}:00 - ${buoihoc.tiet[buoihoc.tiet.length-1]+6}:50</h5>
+                        <h5>${i+1}.${buoihoc.tiet[0]+5}:00 - ${buoihoc.tiet[buoihoc.tiet.length-1]+5}:50</h5>
                         <ul>
                             <li><strong>Môn học: </strong>${buoihoc.maMonHoc} - ${buoihoc.tenMonHoc}</li>
                             <li><strong>Phòng học: </strong>${buoihoc.phong}  (cơ sở ${buoihoc.coso})</li>
