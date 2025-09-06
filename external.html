@@ -273,11 +273,15 @@
 
 
         let infoDot = getInfoKiHocDangKiMonHoc(str);
+        console.log(infoDot);
+
+
         if (infoDot) {
             info.maHocKi = infoDot.maHocKi;
-            info.namHoc = 2000 + parseInt(infoDot.maHocKi) + (infoDot.maHocKi == 1 ? 1 : 0); // Năm học bắt đầu
+            info.namHoc = 2000 + parseInt((infoDot.maHocKi - infoDot.maHocKi%10)/10) + (infoDot.maHocKi == 1 ? 1 : 0); // Năm học bắt đầu
             info.tenDot = infoDot.tenDot;
             info.phanLoaiDot = infoDot.phanLoaiDot;
+            info.maPhanLoaiHocKI = infoDot.maPhanLoaiHocKI;
         }
 
         console.log(infoDot);
@@ -369,19 +373,37 @@
         console.log(data);
         if (data.type === "lichhoc-thongtinsinhvien") {
             
-            container.innerHTML += `<p><strong>Loại: </strong> Thời khóa biểu thông tin sinh viên của học kì ${data.hocKi}</p>`;
+            container.innerHTML += `<p><strong>Loại: </strong> Thời khóa biểu thông tin sinh viên của học kì ${data.maHocKi}</p>`;
         } else if (data.type === "lichthi-thongtinsinhvien") {
-            container.innerHTML += `<p><strong>Loại: </strong> Lịch thi thông tin sinh viên của học kì ${data.hocKi}</p>`;
+            container.innerHTML += `<p><strong>Loại: </strong> Lịch thi thông tin sinh viên của học kì ${data.maHocKi}</p>`;
         } else if (data.type === "lichhoc-dangkimonhoc") {
             // console.log("data.phanLoaiDot", data.phanLoaiDot);
             container.innerHTML += `<p><strong>Loại: </strong> Thời khóa biểu đăng kí môn học của học kì ${data.maHocKi} (${data.phanLoaiDot == "D" ? "Đợt " : data.phanLoaiDot}${data.tenDot})</p>`;
 
+            let defaultValue 
+            console.log(data.namHoc)
+            // tự động tính toán đợt
+            if(data.maPhanLoaiHocKI == "HK" && data.phanLoaiDot == "D") { // chỉ phân loại cho hk chính
 
+                if(data.maHocKi %10 == 2){
+                    // cài tự động là tuần thứ 2 của năm đó nếu là hk1
+                    let resultDay  = getDateOfWeekDay(data.namHoc, 2, 1);
+                    defaultValue = formatDateToYMD(resultDay);
+                    alert("Nhận diện tự động là học kì 2. Tụ động cài này bắt đầu là " + defaultValue + ". Vui lòng kiểm tra lại ngày bắt đầu học kì bên dưới.");
+
+                }else if(data.maHocKi %10 == 1){
+                    // cài tự động là tuần thứ 35 của năm đó nếu là hk2
+                    let resultDay  = getDateOfWeekDay(data.namHoc, 35, 1);
+                    defaultValue = formatDateToYMD(resultDay);
+                    alert("Nhận diện tự động là học kì 1. Tụ động cài này bắt đầu là " + defaultValue + ". Vui lòng kiểm tra lại ngày bắt đầu học kì bên dưới.");
+                }
+
+            }
 
             container.innerHTML +=`
-            <strong>Chú ý: </strong>Vui lòng nhập vào ô dưới <strong> ngày thứ 2</strong> của tuần bắt đầu học kì: <br/>
+            <strong>Chú ý: </strong>Vui lòng nhập vào ô dưới <strong> ngày thứ 2</strong> của tuần bắt đầu học kì (định dạng tháng/ngày/năm): <br/>
             <div style="margin: 1%;"></div>
-                <input type="date" id="start-date-picker" class="form-control"  />
+                <input type="date" id="start-date-picker" class="form-control"  value="${defaultValue}">
             <div style="margin: 1%;"></div>
             <p>Tham khảo lịch học vụ trường tại: <a href="https://hcmut.edu.vn/dao-tao/lich-hoc-vu" target="_blank">https://hcmut.edu.vn/dao-tao/lich-hoc-vu    </a></p>
 
@@ -444,6 +466,14 @@
         }
         table += `</tbody></table>`;
         container.innerHTML += table;
+    }
+    function formatDateToYMD(date) {
+        const year = date.getFullYear();
+        // getMonth() trả về từ 0-11, nên cần +1
+        const month = (date.getMonth() + 1).toString().padStart(2, '0');
+        const day = date.getDate().toString().padStart(2, '0');
+
+        return `${year}-${month}-${day}`;
     }
     function getDateOfWeekDay(year, weekNumber, dayOfWeek) {
         const firstDayOfYear = new Date(year, 0, 1);
@@ -695,7 +725,7 @@ END:VTIMEZONE\n`; // keep old header from ics
     const API_KEY = 'AIzaSyDCXuF1wAsAi0OzGdiKOqboG3PDA-69DV0'; 
     const DISCOVERY_DOC = 'https://www.googleapis.com/discovery/v1/apis/calendar/v3/rest';
     const SCOPES = 'https://www.googleapis.com/auth/calendar';
-    
+
     let tokenClient;
     let gapiInited = false;
     let gisInited = false;
