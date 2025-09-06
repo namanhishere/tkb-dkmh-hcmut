@@ -16,7 +16,7 @@
         <div style="margin: 5%;"></div>
         <div class="text-center">
             <h1 class="card-title">Ứng dụng nhập thời khóa biểu & lịch thi</h1>
-            <p>Bạn đang truy cập vào phiên bản <strong>internal</strong> của dự án. Phiên bản này chỉ hoạt động trên gmail <strong>@hcmut.edu.vn</strong></p>
+            <p>Bạn đang truy cập vào phiên bản <strong>external</strong> của dự án. Phiên bản này là phiên bản <storng>chưa được xác thực</storng> bỏi Google</p>
         </div>
         <div style="margin: 3%;"></div>
         <div class="card card-body">
@@ -66,59 +66,59 @@
     let finalData = null;
 
     
-//         document.getElementById("text-box").value =`
-// ﻿
-//   ĐĂNG KÝ MÔN HỌC
-//  Đăng xuất
-//  Xem Lịch sử đăng ký/Kết quả hậu kiểm
-//  Trần Nam Anh (2352068)
-// BẢNG ĐĂNG KÝ MÔN HỌC
-//  (HK251_D3) Đăng ký bổ sung môn học học kỳ 1/2025-2026 đợt 3 và Kết quả đợt 2 (Sinh viên - Học viên)
-// 1SP1035 - Chủ nghĩa xã hội khoahọc2.0
-// Nhóm lớp	DK/ Sĩ số	Ngôn ngữ	Nhóm LT	Giảng viên	Nhóm BT	Giảng viên BT/TN	Sĩ số LT	#
-// CC09	80/80	V	CC09				80	
-// Thứ	Tiết	Phòng	CS	BT/TN	Tuần học
-// Thứ 3	- - - - - - - - - - 11 12 - - - -	B1-311	1		12345678-0123-----------------
-// 2CO3103 - Đồ án tổng hợp - cnpm1.0
-// Nhóm lớp	DK/ Sĩ số	Ngôn ngữ	Nhóm LT	Giảng viên	Nhóm BT	Giảng viên BT/TN	Sĩ số LT	#
-// CC01	76/500	V	CC01	"Chưa/Đang phân công"			500	
-// Thứ	Tiết	Phòng	CS	BT/TN	Tuần học
-// Chưa biết	--	------	1		12345678-0123456--------------
-// 3CO3001 - Công nghệ phần mềm3.0
-// Nhóm lớp	DK/ Sĩ số	Ngôn ngữ	Nhóm LT	Giảng viên	Nhóm BT	Giảng viên BT/TN	Sĩ số LT	#
-// CC03	80/80	V	CC03				80	
-// Thứ	Tiết	Phòng	CS	BT/TN	Tuần học
-// Thứ 3	- - - 4 5 - - - - - - - - - - -	C6-601	1		12345678-0123456--------------
-// 4CO3109 - T/tập ĐAMH đa ngành-cnpm1.0
-// Nhóm lớp	DK/ Sĩ số	Ngôn ngữ	Nhóm LT	Giảng viên	Nhóm BT	Giảng viên BT/TN	Sĩ số LT	#
-// CC01	20/60	V	CC01	"Chưa/Đang phân công"			60	
-// Thứ	Tiết	Phòng	CS	BT/TN	Tuần học
-// Chưa biết	--	------	1		12345678-0123456--------------
-// 5IM1025 - Quản lý dự án cho kỹ sư3.0
-// Nhóm lớp	DK/ Sĩ số	Ngôn ngữ	Nhóm LT	Giảng viên	Nhóm BT	Giảng viên BT/TN	Sĩ số LT	#
-// CC01	80/80	V	CC01	Nguyễn Thị Đức Nguyên			80	
-// Thứ	Tiết	Phòng	CS	BT/TN	Tuần học
-// Thứ 6	- 2 3 - - - - - - - - - - - - -	B1-306	1		12345678-0123456--------------
-// 6CO3005 - Ng/lý ngôn ngữ lập trình4.0
-// Nhóm lớp	DK/ Sĩ số	Ngôn ngữ	Nhóm LT	Giảng viên	Nhóm BT	Giảng viên BT/TN	Sĩ số LT	#
-// CC01	55/60	V	CC01	Nguyễn Hứa Phùng			60	
-// Thứ	Tiết	Phòng	CS	BT/TN	Tuần học
-// Thứ 2	- - - 4 5 6 - - - - - - - - - -	A4-510	1		12345678-012345---------------
-// 7CO2001 - Kỹnăng chnghiệp cho kỹsư3.0
-// Nhóm lớp	DK/ Sĩ số	Ngôn ngữ	Nhóm LT	Giảng viên	Nhóm BT	Giảng viên BT/TN	Sĩ số LT	#
-// CC01	60/60	V	CC01	Nguyễn Cao Trí			60	
-// Thứ	Tiết	Phòng	CS	BT/TN	Tuần học
-// Thứ 3	- - - - - - - 8 9 - - - - - - -	B6-305	1		12345678-0123456--------------
+        document.getElementById("text-box").value =`
+﻿
+  ĐĂNG KÝ MÔN HỌC
+ Đăng xuất
+ Xem Lịch sử đăng ký/Kết quả hậu kiểm
+ Trần Nam Anh (2352068)
+BẢNG ĐĂNG KÝ MÔN HỌC
+ (HK251_D3) Đăng ký bổ sung môn học học kỳ 1/2025-2026 đợt 3 và Kết quả đợt 2 (Sinh viên - Học viên)
+1SP1035 - Chủ nghĩa xã hội khoahọc2.0
+Nhóm lớp	DK/ Sĩ số	Ngôn ngữ	Nhóm LT	Giảng viên	Nhóm BT	Giảng viên BT/TN	Sĩ số LT	#
+CC09	80/80	V	CC09				80	
+Thứ	Tiết	Phòng	CS	BT/TN	Tuần học
+Thứ 3	- - - - - - - - - - 11 12 - - - -	B1-311	1		12345678-0123-----------------
+2CO3103 - Đồ án tổng hợp - cnpm1.0
+Nhóm lớp	DK/ Sĩ số	Ngôn ngữ	Nhóm LT	Giảng viên	Nhóm BT	Giảng viên BT/TN	Sĩ số LT	#
+CC01	76/500	V	CC01	"Chưa/Đang phân công"			500	
+Thứ	Tiết	Phòng	CS	BT/TN	Tuần học
+Chưa biết	--	------	1		12345678-0123456--------------
+3CO3001 - Công nghệ phần mềm3.0
+Nhóm lớp	DK/ Sĩ số	Ngôn ngữ	Nhóm LT	Giảng viên	Nhóm BT	Giảng viên BT/TN	Sĩ số LT	#
+CC03	80/80	V	CC03				80	
+Thứ	Tiết	Phòng	CS	BT/TN	Tuần học
+Thứ 3	- - - 4 5 - - - - - - - - - - -	C6-601	1		12345678-0123456--------------
+4CO3109 - T/tập ĐAMH đa ngành-cnpm1.0
+Nhóm lớp	DK/ Sĩ số	Ngôn ngữ	Nhóm LT	Giảng viên	Nhóm BT	Giảng viên BT/TN	Sĩ số LT	#
+CC01	20/60	V	CC01	"Chưa/Đang phân công"			60	
+Thứ	Tiết	Phòng	CS	BT/TN	Tuần học
+Chưa biết	--	------	1		12345678-0123456--------------
+5IM1025 - Quản lý dự án cho kỹ sư3.0
+Nhóm lớp	DK/ Sĩ số	Ngôn ngữ	Nhóm LT	Giảng viên	Nhóm BT	Giảng viên BT/TN	Sĩ số LT	#
+CC01	80/80	V	CC01	Nguyễn Thị Đức Nguyên			80	
+Thứ	Tiết	Phòng	CS	BT/TN	Tuần học
+Thứ 6	- 2 3 - - - - - - - - - - - - -	B1-306	1		12345678-0123456--------------
+6CO3005 - Ng/lý ngôn ngữ lập trình4.0
+Nhóm lớp	DK/ Sĩ số	Ngôn ngữ	Nhóm LT	Giảng viên	Nhóm BT	Giảng viên BT/TN	Sĩ số LT	#
+CC01	55/60	V	CC01	Nguyễn Hứa Phùng			60	
+Thứ	Tiết	Phòng	CS	BT/TN	Tuần học
+Thứ 2	- - - 4 5 6 - - - - - - - - - -	A4-510	1		12345678-012345---------------
+7CO2001 - Kỹnăng chnghiệp cho kỹsư3.0
+Nhóm lớp	DK/ Sĩ số	Ngôn ngữ	Nhóm LT	Giảng viên	Nhóm BT	Giảng viên BT/TN	Sĩ số LT	#
+CC01	60/60	V	CC01	Nguyễn Cao Trí			60	
+Thứ	Tiết	Phòng	CS	BT/TN	Tuần học
+Thứ 3	- - - - - - - 8 9 - - - - - - -	B6-305	1		12345678-0123456--------------
 
-// Tổng số tín chỉ đăng ký: 17.0 (Dự thính: 0)
-// Tổng số môn đăng ký: 7
+Tổng số tín chỉ đăng ký: 17.0 (Dự thính: 0)
+Tổng số môn đăng ký: 7
 
-// TRANG CHÍNH
+TRANG CHÍNH
  
-// ĐĂNG KÝ/ HIỆU CHỈNH
-// Version 2.0.2Copyright © 2014-2016 Phòng đào tạo, Đại học Bách Khoa TP.HCM
-// ﻿
-//         `
+ĐĂNG KÝ/ HIỆU CHỈNH
+Version 2.0.2Copyright © 2014-2016 Phòng đào tạo, Đại học Bách Khoa TP.HCM
+﻿
+        `
 
     // Ánh xạ tiết học sang giờ cụ thể (bạn có thể tùy chỉnh)
     const TIET_HOC_TIMES = {
@@ -141,7 +141,7 @@
 
     };
 
-    // ===== BẮT ĐẦU PHẦN PRASE THỜI KHÓA BIỂU THÔNG TIN SINH VIÊN  =====
+    // ===== BẮT ĐẦU PHẦN PRASE THỜI KHÓA BIỂU THÔNG TIN SINH VIÊN (CODE CỦA BẠN) =====
     function praseTietThongTinSinhVien(str) {
         str = str.replace(/\s+/g, "");
         if (str === '--' || str === '') return [0];
@@ -361,7 +361,6 @@
         document.getElementById("export-section").style.display = 'block';
     }
 
-
     function displayResults(data) {
         const container = document.getElementById("result-container");
         container.innerHTML = ""; // Xóa nội dung cũ
@@ -494,8 +493,7 @@
         }
     }
 
-
-    // ===== TẠO FILE .ICS =======================================
+    // =====  TẠO FILE .ICS =======================================
 
     function formatICSDate(date) {
         // YYYYMMDDTHHmmssZ
@@ -606,7 +604,7 @@ END:VTIMEZONE\n`; // keep old header from ics
             }
 
             if (finalData.type === "lichhoc-dangkimonhoc") {
-                autoFixMonDay(finalData); 
+                autoFixMonDay(finalData); // giữ nguyên nếu bạn cần
             }
 
             const [startYear, startMonth, startDay] = startDateInput.split('-').map(Number);
@@ -664,6 +662,7 @@ END:VTIMEZONE\n`; // keep old header from ics
             
 
 
+        // downloadICS(events, `TKB_${finalData.maHocKi}.ics`);
         console.log(events);
         let icsContent = getICSContent(events);
         document.getElementById('result-container').innerHTML += "<br/><h5>Nội dung file .ics:</h5><br/>";
@@ -691,8 +690,8 @@ END:VTIMEZONE\n`; // keep old header from ics
     // ===== NHẬP VÀO GOOGLE CALENDAR (OAUTH 2.0) ===============
 
 
-    const CLIENT_ID = '70228146921-k2g4fc96nb4n02aa8232rfiduct2tsff.apps.googleusercontent.com';
-    const API_KEY = 'AIzaSyBxy7yvungSMjVF_E8a2SxuAqaKj77npzw'; 
+    const CLIENT_ID = '74309253857-pt9bohd5qjoq96tiem1iublcqts5v6i8.apps.googleusercontent.com';
+    const API_KEY = 'AIzaSyDCXuF1wAsAi0OzGdiKOqboG3PDA-69DV0'; 
     const DISCOVERY_DOC = 'https://www.googleapis.com/discovery/v1/apis/calendar/v3/rest';
     const SCOPES = 'https://www.googleapis.com/auth/calendar';
 
@@ -719,7 +718,7 @@ END:VTIMEZONE\n`; // keep old header from ics
         tokenClient = google.accounts.oauth2.initTokenClient({
             client_id: CLIENT_ID,
             scope: SCOPES,
-            callback: '', 
+            callback: '', // Sẽ được định nghĩa lại sau
         });
         gisInited = true;
         maybeEnableButtons();

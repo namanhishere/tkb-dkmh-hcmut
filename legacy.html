@@ -1,0 +1,339 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <title>Nhập TKB ĐKMH</title>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <!-- <script src="https://unpkg.com/ics@3.7.2/dist/index.js" crossorigin="anonymous" referrerpolicy="no-referrer"></script> -->
+    <!-- <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script> -->
+    <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script> -->
+    <!-- <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script> -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    
+</head>
+
+<body>
+    <div class="container">
+        <div style="margin: 5%;"></div>
+        <div class="text-center">
+            <h1 class="card-title">Ứng dụng nhập thời khóa biểu từ web ĐKMH mybk</h1>
+            <p>Regex design by: @kenkout. Web build by @namanhishere.</p>
+            <p>Contact me at: namanh@namanhishere.com</p>
+        </div>
+        <div style="margin: 3%;"></div>
+        <div>
+            <h4 class="card-title">Nhập dữ liệu thời khóa biểu</h4>
+            <p><strong>Chú ý:</strong> Dữ liệu copy từ Safari sẽ gây lỗi (tested with Safari 5.1.7). Khuyến khích các bạn sử dụng Google Chrome để copy dữ liệu từ web ĐKMN</p>
+            <textarea class="form-control" id="text-box" placeholder="Điền dữ liệu của bạn vào đây" row="10"></textarea>
+            <div style="margin: 1%;"></div>
+            <div class="btn-primary btn" id="verifybtn">Nhập thời khóa biểu</div>
+        </div>
+        <div style="margin: 3%;"></div>
+
+        <div class="text-center" id="icsTextExport">
+        </div>
+
+
+    </div>
+</body>
+
+
+<script>
+    let eventList = []
+
+//use for fast test only
+
+//         document.getElementById("text-box").value =`
+//         ﻿
+//   ĐĂNG KÝ MÔN HỌC
+//  Đăng xuất
+//  Xem Lịch sử đăng ký/Kết quả hậu kiểm
+// BẢNG ĐĂNG KÝ MÔN HỌC
+//  Kết quả đợt Đăng ký Bổ sung vào các lớp có sẵn HK2/2023-2024 (Đợt bổ sung) và Đợt 3 hậu kiểm
+// 1PE1047 - Võ(Vovi.,Kar.,Taew.)(hp20.0
+// Nhóm lớp	DK/ Sĩ số	Ngôn ngữ	Nhóm LT	Giảng viên	Nhóm BT	Giảng viên BT/TN	Sĩ số LT	#
+// CC05	46/50	V	CC05	"Chưa/Đang phân công"			50	
+// Thứ	Tiết	Phòng	CS	BT/TN	Tuần học
+// Thứ 4	- - - 4 5 6 - - - - - - - - - -	B12-SAN1	1		1234--789-1234----9012--------
+// 2MI1003 - Giáo dục quốc phòng0.0
+// Nhóm lớp	DK/ Sĩ số	Ngôn ngữ	Nhóm LT	Giảng viên	Nhóm BT	Giảng viên BT/TN	Sĩ số LT	#
+// A02	1612/0	V	A02	"Chưa/Đang phân công"			0	
+// Thứ	Tiết	Phòng	CS	BT/TN	Tuần học
+// Thứ 2	- - - - - - - 8 9 10 11 12 - - - -	TT GIAO DUC QP-A	2		--------------5678------------
+// Thứ 2	- - - - - - - - - - - - 13 14 15 -	TT GIAO DUC QP-A	2		--------------5678------------
+// Thứ 2	- 2 3 4 5 6 - - - - - - - - - -	TT GIAO DUC QP-A	2		--------------5678------------
+// Thứ 3	- 2 3 4 5 6 - - - - - - - - - -	TT GIAO DUC QP-A	2		--------------5678------------
+// Thứ 3	- - - - - - - - - - - - 13 14 15 -	TT GIAO DUC QP-A	2		--------------5678------------
+// Thứ 3	- - - - - - - 8 9 10 11 12 - - - -	TT GIAO DUC QP-A	2		--------------5678------------
+// Thứ 4	- - - - - - - - - - - - 13 14 15 -	TT GIAO DUC QP-A	2		--------------5678------------
+// Thứ 4	- - - - - - - 8 9 10 11 12 - - - -	TT GIAO DUC QP-A	2		--------------5678------------
+// Thứ 4	- 2 3 4 5 6 - - - - - - - - - -	TT GIAO DUC QP-A	2		--------------5678------------
+// Thứ 5	- - - - - - - - - - - - 13 14 15 -	TT GIAO DUC QP-A	2		--------------5678------------
+// Thứ 5	- - - - - - - 8 9 10 11 12 - - - -	TT GIAO DUC QP-A	2		--------------5678------------
+// Thứ 5	- 2 3 4 5 6 - - - - - - - - - -	TT GIAO DUC QP-A	2		--------------5678------------
+// Thứ 6	- 2 3 4 5 6 - - - - - - - - - -	TT GIAO DUC QP-A	2		--------------5678------------
+// Thứ 6	- - - - - - - - - - - - 13 14 15 -	TT GIAO DUC QP-A	2		--------------5678------------
+// Thứ 6	- - - - - - - 8 9 10 11 12 - - - -	TT GIAO DUC QP-A	2		--------------5678------------
+// Thứ 7	- 2 3 4 5 6 - - - - - - - - - -	TT GIAO DUC QP-A	2		--------------5678------------
+// Thứ 7	- - - - - - - - - - - - 13 14 15 -	TT GIAO DUC QP-A	2		--------------5678------------
+// Thứ 7	- - - - - - - 8 9 10 11 12 - - - -	TT GIAO DUC QP-A	2		--------------5678------------
+// Chủ nhật	- 2 3 4 5 6 - - - - - - - - - -	TT GIAO DUC QP-A	2		--------------5678------------
+// Chủ nhật	- - - - - - - 8 9 10 11 12 - - - -	TT GIAO DUC QP-A	2		--------------5678------------
+// 3CO1005 - Nhập môn điện toán3.0
+// Nhóm lớp	DK/ Sĩ số	Ngôn ngữ	Nhóm LT	Giảng viên	Nhóm BT	Giảng viên BT/TN	Sĩ số LT	#
+// CC02_CC04	23/40	V	CC02	Mai Đức Trung	CC04	Trương Thị Thái Minh	80	
+// Thứ	Tiết	Phòng	CS	BT/TN	Tuần học
+// Thứ 5	- - - - - - - - - 10 11 - - - - -	B1-212	1		1234--789-1234----9012--------
+// Thứ 6	- - - - - - - 8 9 10 11 12 - - - -	A5-106.2	1		----------1-3-----9-1---------
+// 4MT1003 - Giải tích 14.0
+// Nhóm lớp	DK/ Sĩ số	Ngôn ngữ	Nhóm LT	Giảng viên	Nhóm BT	Giảng viên BT/TN	Sĩ số LT	#
+// CC02_CC04	55/60	V	CC02	Hoàng Hải Hà	CC04	Lê Xuân Đại	120	
+// Thứ	Tiết	Phòng	CS	BT/TN	Tuần học
+// Thứ 3	- 2 3 4 - - - - - - - - - - - -	B4-505	1		1234--789-1234----9012--------
+// Thứ 4	- - - - - - - - 9 10 - - - - - -	B4-305	1		-2-4---8---2-4-----0-2--------
+// 5CO1023 - Hệ thống số3.0
+// Nhóm lớp	DK/ Sĩ số	Ngôn ngữ	Nhóm LT	Giảng viên	Nhóm BT	Giảng viên BT/TN	Sĩ số LT	#
+// CC01_CC01	21/40	V	CC01	Phạm Hoàng Anh	CC01		80	
+// Thứ	Tiết	Phòng	CS	BT/TN	Tuần học
+// Thứ 2	- - - - - - - 8 9 10 11 12 - - - -	C5-202	1		----------1234----90----------
+// Thứ 2	- - - - 5 6 - - - - - - - - - -	B8-303	1		1234--789-1234----9012--------
+// 6PH1003 - Vật lý 14.0
+// Nhóm lớp	DK/ Sĩ số	Ngôn ngữ	Nhóm LT	Giảng viên	Nhóm BT	Giảng viên BT/TN	Sĩ số LT	#
+// CC03_CC03	71/80	V	CC03	Trần Thị Thu Hạnh	CC03	Nguyễn Xuân Thanh Trâm	80	
+// Thứ	Tiết	Phòng	CS	BT/TN	Tuần học
+// Thứ 5	- - - 4 5 6 - - - - - - - - - -	B4-305	1		1234--789-1234----9012--------
+// Thứ 6	- - - 4 5 - - - - - - - - - - -	C6-401	1		--3---7-9-1-3-----9-1---------
+// 7TY0001 - Đại Cương Tình Iu4.0
+// Nhóm lớp	DK/ Sĩ số	Ngôn ngữ	Nhóm LT	Giảng viên	Nhóm BT	Giảng viên BT/TN	Sĩ số LT	#
+// CC01_CC01	71/80	V	CC03	Đang nào có tình iu	CC03	Đang nào có tình iu	80	
+// Thứ	Tiết	Phòng	CS	BT/TN	Tuần học
+// Thứ 7	- - - 4 5 - - - - - - - - - - -	B4-305	1		1234--789-1234----9012--------
+
+// Tổng số tín chỉ đăng ký: 17.0 (Dự thính: 0)
+// Tổng số môn đăng ký: 7
+
+// TRANG CHÍNH
+
+// ĐĂNG KÝ/ HIỆU CHỈNH
+// Version 2.0.2Copyright © 2014-2016 Phòng đào tạo, Đại học Bách Khoa TP.HCM
+// ﻿
+//         `
+
+
+    // var cal = ics();
+    const subjectPattern = /^\d+([A-Z]{2}\d{4}) - (.+)[0-9].[0-9]/;
+    
+
+
+    function dayMap(inp){
+        if(inp == "Chủ nhật") return 0
+        //who care the error
+        return parseInt(inp.split(" ")[1])-1
+    }
+    function addDays(date, days) {
+        const result = new Date(date);
+        result.setDate(result.getDate() + days);
+        return result;
+    }
+    function download(data, filename, type) {
+        var file = new Blob([data], {type: type});
+        if (window.navigator.msSaveOrOpenBlob) // IE10+
+            window.navigator.msSaveOrOpenBlob(file, filename);
+        else { // Others
+            var a = document.createElement("a"),
+                    url = URL.createObjectURL(file);
+            a.href = url;
+            a.download = filename;
+            document.body.appendChild(a);
+            a.click();
+            setTimeout(function() {
+                document.body.removeChild(a);
+                window.URL.revokeObjectURL(url);  
+            }, 0); 
+        }
+    }
+    function createEventPromise(event){
+        //copy from BKalendar
+        let countEvent = 0
+        let startString =`BEGIN:VCALENDAR
+VERSION:2.0
+BEGIN:VTIMEZONE
+TZID:Asia/Ho_Chi_Minh
+TZURL:http://tzurl.org/zoneinfo-outlook/Asia/Ho_Chi_Minh
+X-LIC-LOCATION:Asia/Ho_Chi_Minh
+BEGIN:STANDARD
+TZOFFSETFROM:+0700
+TZOFFSETTO:+0700
+TZNAME:+07
+DTSTART:19700101T000000
+END:STANDARD
+END:VTIMEZONE\n`
+let eventString = ""
+event.forEach(eve => {
+    countEvent ++
+    eventString  = eventString+ `BEGIN:VEVENT
+UID:${"dkh1"+countEvent}
+SUMMARY:${eve.title}
+DTSTAMP:20050101T000000Z
+DTSTART:${eve.start[0]}${addZero(eve.start[1])}${addZero(eve.start[2])}T${addZero(eve.start[3]-8)}${addZero(eve.start[4])}00Z
+DTEND:${eve.end[0]}${addZero(eve.end[1])}${addZero(eve.end[2])}T${addZero(eve.end[3]-8)}${addZero(eve.end[4])}00Z
+LOCATION:${eve.location}
+END:VEVENT
+`
+})
+let endString = "END:VCALENDAR"
+return startString+eventString+endString
+    }
+
+
+    function downloadTKB() {
+        let vale = createEventPromise(eventList)
+        download(vale,"tkb.ics","text/plain")
+    }
+    function addZero(intp){
+        if(intp<10) return `0${intp}`
+        return intp
+    }
+
+
+    document.getElementById("verifybtn").addEventListener("click",function(e){
+        e.preventDefault()
+        eventList = []
+        let textInp  = document.getElementById("text-box").value
+        let lines = textInp.split("\n")
+        let startDate = new Date(2025,07,18) //config theo ngày thứ 2 của tuần trước khi bắt đầu học kì, tháng bắt đầu từ tháng 0 (vd 2025,07,18 là bắt đầu từ ngày 25/8/2025)
+
+        let listTatCaMon = []
+
+        for (let index = 0; index < lines.length; index++) {
+            let line = lines[index];
+
+            //line format
+            // line = line.trim()
+
+            // console.log(lines.length)
+            
+
+
+            //if not môn, so skip
+            let subjectMatch =  line.match(subjectPattern) 
+            if(line.match(subjectPattern) == null) continue 
+
+            // console.log(subjectMatch)
+
+            let currentClass = {
+                subject: subjectMatch[1] + ' - ' + subjectMatch[2].trim(),
+                listTuanHoc: []
+            };
+
+            // console.log(lines[index+4])
+
+            let countSoTiet = 1
+
+            // console.log()
+            while(lines[index+3+countSoTiet ].match(subjectPattern) == null ){
+                
+                if(lines[index+4+countSoTiet].startsWith("Tổng số tín chỉ đăng ký:")) break
+                let buoiHocRaw = (lines[index+3+countSoTiet]).split("\t")
+                // console.log(typeof buoiHocRaw[0])
+                console.log(buoiHocRaw[0])
+                if(!buoiHocRaw[0] || buoiHocRaw[0] == "" || buoiHocRaw[0]==undefined || buoiHocRaw[0]==null || buoiHocRaw[0].trim() != "Chưa biết"){
+
+                        let tietInfo = {
+                        thu : dayMap(buoiHocRaw[0]),
+                        tiet:buoiHocRaw[1].split(" ").map((v,i)=> v=="-"? "99999":i+1).filter(v => v!="99999"),    
+                        phongHoc:buoiHocRaw[2],
+                        cs:buoiHocRaw[3],
+                        tuanHoc:buoiHocRaw[5].split("").filter(v=> v!=" ").map((v,i)=> v=="-"? "99999":i+1).filter(v => v!="99999"),
+
+                        // tietString:buoiHocRaw[5].split("").map((v,i)=> v=="-"? "--|":`${i+1}|`).join(""),
+
+                        // tuanHocString : buoiHocRaw[1].split("").map((v,i)=> v=="-"? "--|":`${i+1}|`).join(""),
+                    }
+
+                    currentClass.listTuanHoc.push(tietInfo)
+
+                    //add Event
+                    // cal.addEvent(currentClass.subject, 't', tietInfo.phongHoc , '1   2/25/2013', '12/25/2013');
+
+                    let startTimeHour = parseInt(tietInfo.tiet[0]) + 6; // Tiet starts at 6 AM
+                    let endTimeHour = parseInt(tietInfo.tiet[tietInfo.tiet.length-1]) + 6; // Same as start time, plus offset
+
+                    
+
+                    tietInfo.tuanHoc.forEach(tuan => {
+                        let daysToAdd = tuan * 7 + tietInfo.thu - startDate.getDay();
+                        let eventDate = addDays(startDate, daysToAdd);
+
+                        eventList.push({
+                            start: [eventDate.getFullYear(), eventDate.getMonth() + 1, eventDate.getDate(), startTimeHour, 0],
+                            end: [eventDate.getFullYear(), eventDate.getMonth() + 1, eventDate.getDate(), endTimeHour, 50],
+                            productId: "lichHocDKMHmybk",
+                            title: currentClass.subject,
+                            location:tietInfo.phongHoc
+                        })
+                        
+                        
+                    });
+
+                    
+                    // console.dir(tietInfo,{length:null})
+                    
+
+                }
+
+                countSoTiet++
+
+
+            }
+
+            // console.log(currentClass)
+            listTatCaMon.push(currentClass)
+        }
+
+        console.log(listTatCaMon)
+
+        // document.getElementById("countSoMonHoc").innerHTML  = 
+
+        let eventCreated = listTatCaMon.map(clas => {
+            return `
+            <div class="">
+                <h4 class='card-title'>${clas.subject}</h4>
+                <p>Tìm thấy dữ liệu của <strong>${clas.listTuanHoc.length}</strong> buổi học</p>
+
+                ${clas.listTuanHoc.map((v,i) => {
+                    return `
+                    <div class='card card-body'>
+                        <h5 class="text-left card-title">${i+1}.${v.thu == 0 ? "Chủ nhật" : `Thứ ${v.thu+1}`}</h5>
+                        <ul class="text-left">
+                            <li><strong>Thời gian học: </strong>${parseInt(v.tiet[0]) + 5}:00-${parseInt(v.tiet[v.tiet.length-1]) + 5}:50</li>
+                            <li><strong>Tuần học: </strong>${v.tuanHoc}</li>
+                            <li><strong>Phòng học: </strong>${v.phongHoc}</li>
+                    </div>
+                    `
+                }).join("<div style='margin: 1%'></div>")}
+            </div>
+        
+            `
+        }).join("<div style='margin: 5%'></div>")
+
+        // document.getElementById("icsTextExport").innerHTML =    "<button class='btn btn-success' onmousedown='downloadTKB()'>Tải file .ics</button><div style='margin: 1%;'><p>"+eventCreated+"</p><div style='margin: 1%;'>"
+        document.getElementById("icsTextExport").innerHTML =    "<h3 class='card-title'>Dữ liệu trả về</h3><p>Dữ liệu được nhập có tổng cộng <strong>"+listTatCaMon.length+"</strong> môn học</p><button class='btn btn-success' onmousedown='downloadTKB()'>Tải file .ics</button><div style='margin: 1%;'><p>"+eventCreated+"</p><div style='margin: 1%;'>"
+// 
+
+
+
+
+        
+
+
+    })
+
+</script>
+
+<style>
+
+</style>
+</html>
