@@ -261,7 +261,7 @@
 
         let lines = str.split('\n').map(line => line.trim());
 
-        let regsNhanDienMon = /[0-9]([A-Z]{2}[0-9]{4}) - ([\s\S]*?)([0-9]\.[0-9])/;
+        let regsNhanDienMon = /[0-9]\n?([A-Z]{2}[0-9]{4}) - ([\s\S]*?)\n?([0-9]\.[0-9])/;
 
 
         let info = {
