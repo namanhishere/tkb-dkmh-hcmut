@@ -180,7 +180,7 @@
         let info = {
             type: "lichhoc-thongtinsinhvien",
             maHocKi: matches[0][1] + matches[0][2],
-            namHoc: parseInt(matches[0][1]),
+            namHoc: parseInt(matches[0][1]) + (matches[0][2] == 1 ? 0 : 1),
             monHoc: []
         }
         for (let match of matches) {
@@ -925,7 +925,7 @@ END:VTIMEZONE\n`; // keep old header from ics
                 
 
             if (eventCount > 0) {
-                 alert(`Đang tiến hành thêm ${eventCount} sự kiện vào Google Calendar...`);
+                 alert(`Chuẩn bị tiến hành thêm ${eventCount} sự kiện vào Google Calendar. Vui lòng không đóng cửa sổ này và chờ đến khi có thông báo hoàn thành. Bấm OK để bắt đầu.`);
                  await batch;
                  alert(`Đã thêm thành công ${eventCount} sự kiện! Vui lòng kiểm tra Google Calendar của bạn.`);
             } else {

@@ -1,0 +1,21 @@
+Internal key:
+    const CLIENT_ID = '70228146921-k2g4fc96nb4n02aa8232rfiduct2tsff.apps.googleusercontent.com';
+    const API_KEY = 'AIzaSyBxy7yvungSMjVF_E8a2SxuAqaKj77npzw'; 
+    const DISCOVERY_DOC = 'https://www.googleapis.com/discovery/v1/apis/calendar/v3/rest';
+    const SCOPES = 'https://www.googleapis.com/auth/calendar';
+
+        <div class="text-center">
+            <h1 class="card-title">Ứng dụng nhập thời khóa biểu & lịch thi</h1>
+            <p>Bạn đang truy cập vào phiên bản <strong>internal</strong> của dự án. Phiên bản này chỉ hoạt động trên gmail <strong>@hcmut.edu.vn</strong></p>
+        </div>
+
+External key:
+    const CLIENT_ID = '74309253857-pt9bohd5qjoq96tiem1iublcqts5v6i8.apps.googleusercontent.com';
+    const API_KEY = 'AIzaSyDCXuF1wAsAi0OzGdiKOqboG3PDA-69DV0'; 
+    const DISCOVERY_DOC = 'https://www.googleapis.com/discovery/v1/apis/calendar/v3/rest';
+    const SCOPES = 'https://www.googleapis.com/auth/calendar';
+    
+        <div class="text-center">
+            <h1 class="card-title">Ứng dụng nhập thời khóa biểu & lịch thi</h1>
+            <p>Bạn đang truy cập vào phiên bản <strong>external</strong> của dự án. Phiên bản này là phiên bản <storng>chưa được xác thực</storng> bỏi Google</p>
+        </div>
